@@ -874,17 +874,17 @@ if [ -z "$KOPT_root" ]; then
 			mkdir -p /mnt 
 			
 			# Monta il dispositivo e poi il filesystem squashfs
-			if mount -t "$fstype" -o ro "$devicelive" /mnt/ && \
+			if mount -t "$fstype" -o ro "$devicelive" /mnt; then
 				mkdir -p /media/root-ro 
-				mount -t squashfs -o ro "${KOPT_alpinelivesquashfs}" /media/root-ro; then
-				
-				# mount tmpfs on /media/root-rw
-				mkdir -p /media/root-rw 
-				mount -t tmpfs root-tmpfs /media/root-rw
+				if mount -t squashfs -o ro,loop "/mnt/${KOPT_alpinelivesquashfs}" /media/root-ro; then
+					
+					# mount tmpfs on /media/root-rw
+					mkdir -p /media/root-rw 
+					mount -t tmpfs root-tmpfs /media/root-rw
 
-				# creare i punti di montaggio necessari
-				mkdir -p /media/root-rw/work 
-				mkdir -p /media/root-rw/root
+					# creare i punti di montaggio necessari
+					mkdir -p /media/root-rw/work 
+					mkdir -p /media/root-rw/root
 
 				# mount  overlayfs on /sysroot
 				mount -t overlay overlay -o lowerdir=/media/root-ro,upperdir=/media/root-rw/root,workdir=/media/root-rw/work $sysroot
